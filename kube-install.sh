@@ -7,11 +7,11 @@ KUBE_JOIN=/local/kube_join.sh
 PROJ_DIR="$(ls /proj/ | tail -1)"
 
 #sudo rm -f ${KUBE_JOIN}
-echo "executing kube-start at $(date)" > ${LOG}
 
 log() {
-    echo "$1" >> ${LOG}
+	echo "$(date): $1" >> ${LOG}
 }
+log "executing kube-start"
 
 # generate keys to get token via SCP
 /usr/bin/geni-get key > ~/.ssh/id_rsa
