@@ -68,7 +68,7 @@ else
         then
             break
         fi
-        echo "Waiting..."
+        echo "Waiting for the kubernetes token..." >> ${LOG}
         sleep 5
     done
     #until [ -f ${KUBE_JOIN} ]
