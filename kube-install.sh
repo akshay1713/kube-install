@@ -1,10 +1,8 @@
 #!/bin/bash
 
 LOG="/local/kube_start.log"
-PROJ_DIR="$(ls /proj/ | tail -1)"
-KUBE_DIR="/proj/${PROJ_DIR}/kube-config/$1"
 KUBE_JOIN=/local/kube_join.sh
-PROJ_DIR="$(ls /proj/ | tail -1)"
+NODE_IP=$1
 
 #sudo rm -f ${KUBE_JOIN}
 
@@ -39,6 +37,10 @@ sudo apt-mark hold docker-ce kubelet kubeadm kubectl
 
 sudo swapoff -a
 
+echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$NODE_IP\"" | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
 
 HOSTNAME="$(hostname)"
 #echo ${HOSTNAME}
@@ -46,12 +48,11 @@ HOSTNAME="$(hostname)"
 if [[ ${HOSTNAME} =~ "kubernetes00" ]]; then
     echo "export KUBECONFIG=/local/kubeconfig" | sudo tee -a /etc/environment
     log "I am the master"
-    mkdir -p ${KUBE_DIR}
     log "Made proj directory"
 
     export KUBECONFIG=/local/kubeconfig
     log "Exported KUBECONFIG"
-    JOIN_STRING="$(sudo kubeadm init --pod-network-cidr=10.244.0.0/16 | tail -2)"
+    JOIN_STRING="$(sudo kubeadm init --pod-network-cidr=192.168.0.0/16 | tail -2)"
     log "Finished kubeadm init"
     sudo cp -i /etc/kubernetes/admin.conf /local/kubeconfig
     sudo chmod 777 /local/kubeconfig
