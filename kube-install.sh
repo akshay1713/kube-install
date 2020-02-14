@@ -44,6 +44,7 @@ HOSTNAME="$(hostname)"
 #echo ${HOSTNAME}
 
 if [[ ${HOSTNAME} =~ "kubernetes00" ]]; then
+    echo "export KUBECONFIG=/local/kubeconfig" | sudo tee -a /etc/environment
     log "I am the master"
     mkdir -p ${KUBE_DIR}
     log "Made proj directory"
@@ -64,7 +65,6 @@ if [[ ${HOSTNAME} =~ "kubernetes00" ]]; then
     sudo chmod 777 ${LOCAL_KUBE_JOIN}
     sudo mv ${LOCAL_KUBE_JOIN} ${KUBE_JOIN}
     #sudo echo ${JOIN_STRING} >> ${KUBE_JOIN}
-    echo "export KUBECONFIG=/local/kubeconfig" | sudo tee -a /etc/environment
     log "Created kube join file"
 else
     log "I am a worker"
