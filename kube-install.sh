@@ -33,7 +33,7 @@ deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 sudo apt-get update
 sudo apt-get install -y docker-ce
-echo "{\"data-root\": \"/docker\"}" | sudo tee /etc/docker/daemon.json
+echo "{\"data-root\": \"/proj/sandstorm-PG0/kubernetes/images/\"}" | sudo tee /etc/docker/daemon.json
 sudo systemctl restart docker
 
 sudo apt-get install kubelet kubeadm kubectl
