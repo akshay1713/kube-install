@@ -21,21 +21,30 @@ chmod 644 ~/.ssh/authorized_keys
 log "Created ssh key"
 
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install -y software-properties-common
-sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu 
-   $(lsb_release -cs) 
-   stable"
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+sudo apt-get update
+sudo apt-get install -y docker.io
+echo "{\"data-root\": \"/docker\"}" | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
+
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
+
 sudo apt-get update
-sudo apt-get install -y docker-ce kubelet kubeadm kubectl
-sudo apt-mark hold docker-ce kubelet kubeadm kubectl
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold docker.io kubelet kubeadm kubectl
 
 sudo swapoff -a
+
 
 echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$NODE_IP\"" | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 sudo systemctl daemon-reload
