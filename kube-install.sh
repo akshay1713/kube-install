@@ -66,8 +66,8 @@ if [[ ${HOSTNAME} =~ "kubernetes00" ]]; then
     sudo cp -i /etc/kubernetes/admin.conf /local/kubeconfig
     sudo chmod 777 /local/kubeconfig
     #sudo chown $(id -u):$(id -g) /local/kubeconfig
-    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-    log "applied flannel"
+    kubectl apply -f https://docs.projectcalico.org/v3.9/manifests/calico.yaml
+    log "applied calico"
 
     LOCAL_KUBE_JOIN="/local/.tmp.kube_join.sh"
     echo "#!/bin/bash" > ${LOCAL_KUBE_JOIN}
